@@ -8,10 +8,10 @@ BearLoot = {
 }
 
 local TargetTypes = {
-    INTERACT_TARGET_TYPE_AOE_LOOT = true,
-    INTERACT_TARGET_TYPE_ITEM = true,
-    INTERACT_TARGET_TYPE_NONE = true,
-    INTERACT_TARGET_TYPE_OBJECT = true,
+    [INTERACT_TARGET_TYPE_AOE_LOOT] = true,
+    [INTERACT_TARGET_TYPE_ITEM] = true,
+    [INTERACT_TARGET_TYPE_NONE] = true,
+    [INTERACT_TARGET_TYPE_OBJECT] = true,
 }
 
 local UncappedCurrencies = {
@@ -31,9 +31,20 @@ local CappedCurrencies = {
 }
 
 local TraitTypeIntricate = {
-    ITEM_TRAIT_TYPE_ARMOR_INTRICATE,
-    ITEM_TRAIT_TYPE_JEWELRY_INTRICATE,
-    ITEM_TRAIT_TYPE_WEAPON_INTRICATE,
+    [ITEM_TRAIT_TYPE_ARMOR_INTRICATE] = true,
+    [ITEM_TRAIT_TYPE_JEWELRY_INTRICATE] = true,
+    [ITEM_TRAIT_TYPE_WEAPON_INTRICATE] = true,
+}
+
+local LootIds = {
+    [33271] = true, -- Soul Gem
+    [44879] = true, -- Grand Repair Kit
+    [114427] = true, -- Undaunted Plunder
+}
+
+local ItemTypes = {
+    [ITEMTYPE_RACIAL_STYLE_MOTIF] = true,
+    [ITEMTYPE_TREASURE] = true,
 }
 
 local TransmutationGeodes = {
@@ -45,13 +56,12 @@ local TransmutationGeodes = {
     [134622] = true, -- Deprecated?
     [134623] = true, -- Deprecated?
     [171531] = true,
-
 }
 
 local BL = BearLoot
 local EM = GetEventManager()
 
-local targetType, unownedCurrency, lootId, itemLink, isSet, traitType, itemId, isCollected, _
+local targetType, unownedCurrency, lootId, itemLink, isSet, traitType, itemId, itemType, isCollected, _
 
 local function OnLootUpdated()
     _, targetType = GetLootTargetInfo()
@@ -66,6 +76,7 @@ local function OnLootUpdated()
         for k, v in ipairs(CappedCurrencies) do
             unownedCurrency = GetLootCurrency(v)
 
+            -- Don't overflow
             if unownedCurrency > 0 and (GetMaxPossibleCurrency(v, CURRENCY_LOCATION_ACCOUNT) >= GetCurrencyAmount(v, CURRENCY_LOCATION_ACCOUNT) + unownedCurrency) then LootCurrency(v) end
         end
 
@@ -75,14 +86,14 @@ local function OnLootUpdated()
             isSet = GetItemLinkSetInfo(itemLink, false)
             traitType = GetItemLinkTraitInfo(itemLink)
             itemId = GetItemLinkItemId(itemLink)
+            itemType = GetItemLinkItemType(itemLink)
             -- isCollected = IsItemSetCollectionPieceUnlocked(itemId)
 
             for k, v in ipairs(TraitTypeIntricate) do
                 if v == traitType then LootItemById(lootId) end
             end
 
-            -- Id's respectively: Soul Gem, Grand Repair Kit
-            if isSet or itemId == 33271 or itemId == 44879 or TransmutationGeodes[itemId] then LootItemById(lootId)end
+            if isSet or ItemTypes[itemType] or LootIds[itemId] or TransmutationGeodes[itemId] then LootItemById(lootId)end
         end
     end
 end
