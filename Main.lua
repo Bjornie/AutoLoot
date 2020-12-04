@@ -67,17 +67,17 @@ local function OnLootUpdated()
     _, targetType = GetLootTargetInfo()
 
     if TargetTypes[targetType] then
-        for k, v in ipairs(UncappedCurrencies) do
-            unownedCurrency = GetLootCurrency(v)
+        for key, value in ipairs(UncappedCurrencies) do
+            unownedCurrency = GetLootCurrency(value)
 
-            if unownedCurrency > 0 then LootCurrency(v) end
+            if unownedCurrency > 0 then LootCurrency(value) end
         end
 
-        for k, v in ipairs(CappedCurrencies) do
-            unownedCurrency = GetLootCurrency(v)
+        for key, value in ipairs(CappedCurrencies) do
+            unownedCurrency = GetLootCurrency(value)
 
             -- Don't overflow
-            if unownedCurrency > 0 and (GetMaxPossibleCurrency(v, CURRENCY_LOCATION_ACCOUNT) >= GetCurrencyAmount(v, CURRENCY_LOCATION_ACCOUNT) + unownedCurrency) then LootCurrency(v) end
+            if unownedCurrency > 0 and (GetMaxPossibleCurrency(value, CURRENCY_LOCATION_ACCOUNT) >= GetCurrencyAmount(value, CURRENCY_LOCATION_ACCOUNT) + unownedCurrency) then LootCurrency(value) end
         end
 
         for i = 1, GetNumLootItems() do
@@ -89,11 +89,7 @@ local function OnLootUpdated()
             itemType = GetItemLinkItemType(itemLink)
             -- isCollected = IsItemSetCollectionPieceUnlocked(itemId)
 
-            for k, v in ipairs(TraitTypeIntricate) do
-                if v == traitType then LootItemById(lootId) end
-            end
-
-            if isSet or ItemTypes[itemType] or LootIds[itemId] or TransmutationGeodes[itemId] then LootItemById(lootId)end
+            if isSet or ItemTypes[itemType] or TraitTypeIntricate[traitType] or LootIds[itemId] or TransmutationGeodes[itemId] then LootItemById(lootId)end
         end
     end
 end
