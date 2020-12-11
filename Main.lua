@@ -39,6 +39,7 @@ local TraitTypeIntricate = {
 local LootIds = {
     [33271] = true, -- Soul Gem
     [44879] = true, -- Grand Repair Kit
+    [61079] = true, -- Crown Repair Kit
     [114427] = true, -- Undaunted Plunder
 }
 
