@@ -3,8 +3,6 @@ BearLoot = {
     version = "1.0.0",
     svName = "BearLootSV",
     svVersion = 1,
-
-    Default = {},
 }
 
 local TargetTypes = {
@@ -30,6 +28,12 @@ local CappedCurrencies = {
     CURT_EVENT_TICKETS,
 }
 
+local ItemTypes = {
+    [ITEMTYPE_RACIAL_STYLE_MOTIF] = true,
+    [ITEMTYPE_TREASURE] = true,
+    [ITEMTYPE_CONTAINER] = true,
+}
+
 local TraitTypeIntricate = {
     [ITEM_TRAIT_TYPE_ARMOR_INTRICATE] = true,
     [ITEM_TRAIT_TYPE_JEWELRY_INTRICATE] = true,
@@ -37,26 +41,19 @@ local TraitTypeIntricate = {
 }
 
 local LootIds = {
+    [33265] = true, -- Soul Gem (Empty)
     [33271] = true, -- Soul Gem
     [44879] = true, -- Grand Repair Kit
     [61079] = true, -- Crown Repair Kit
     [114427] = true, -- Undaunted Plunder
-}
-
-local ItemTypes = {
-    [ITEMTYPE_RACIAL_STYLE_MOTIF] = true,
-    [ITEMTYPE_TREASURE] = true,
-}
-
-local TransmutationGeodes = {
-    [134583] = true, -- Deprecated?
-    [134588] = true,
-    [134590] = true,
-    [134591] = true,
-    [134618] = true, -- Deprecated?
-    [134622] = true, -- Deprecated?
-    [134623] = true, -- Deprecated?
-    [171531] = true,
+    [134583] = true, -- Transmutation Geode, Normal
+    [134588] = true, -- Transmutation Geode, Superior
+    [134590] = true, -- Transmutation Geode, Epic
+    [134591] = true, -- Transmutation Geode, Legendary
+    [171531] = true, -- Transmutation Geode, Fine
+    [134618] = true, -- Uncracked Transmutation Geode, Legendary
+    [134622] = true, -- Uncracked Transmutation Geode, Superior
+    [134623] = true, -- Uncracked Transmutation Geode, Epic
 }
 
 local BL = BearLoot
@@ -90,20 +87,14 @@ local function OnLootUpdated()
             itemType = GetItemLinkItemType(itemLink)
             -- isCollected = IsItemSetCollectionPieceUnlocked(itemId)
 
-            if isSet or ItemTypes[itemType] or TraitTypeIntricate[traitType] or LootIds[itemId] or TransmutationGeodes[itemId] then LootItemById(lootId)end
+            if isSet or ItemTypes[itemType] or TraitTypeIntricate[traitType] or LootIds[itemId] then LootItemById(lootId)end
         end
     end
-end
-
-local function Initialise()
-    BL.SV = ZO_SavedVars:NewAccountWide(BL.svName, BL.svVersion, nil, BL.Default)
-
-    EM:RegisterForEvent(BL.name, EVENT_LOOT_UPDATED, OnLootUpdated)
 end
 
 EM:RegisterForEvent(BL.name, EVENT_ADD_ON_LOADED, function(eventCode, addonName)
     if addonName == BL.name then
         EM:UnregisterForEvent(BL.name, EVENT_ADD_ON_LOADED)
-        Initialise()
+        EM:RegisterForEvent(BL.name, EVENT_LOOT_UPDATED, OnLootUpdated)
     end
 end)
