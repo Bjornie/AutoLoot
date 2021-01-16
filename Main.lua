@@ -5,14 +5,14 @@ BearLoot = {
     svVersion = 1,
 }
 
-local TargetTypes = {
+local targetTypes = {
     [INTERACT_TARGET_TYPE_AOE_LOOT] = true,
     [INTERACT_TARGET_TYPE_ITEM] = true,
     [INTERACT_TARGET_TYPE_NONE] = true,
     [INTERACT_TARGET_TYPE_OBJECT] = true,
 }
 
-local UncappedCurrencies = {
+local uncappedCurrencies = {
     CURT_ALLIANCE_POINTS,
     CURT_CROWNS,
     CURT_CROWN_GEMS,
@@ -23,29 +23,29 @@ local UncappedCurrencies = {
     CURT_WRIT_VOUCHERS,
 }
 
-local CappedCurrencies = {
+local cappedCurrencies = {
     CURT_CHAOTIC_CREATIA, -- Transmute Crystal
     CURT_EVENT_TICKETS,
 }
 
-local LootItemTypes = {
+local lootItemTypes = {
     [ITEMTYPE_CONTAINER] = true,
     [ITEMTYPE_RACIAL_STYLE_MOTIF] = true,
     [ITEMTYPE_RECIPE] = true,
     [ITEMTYPE_TREASURE] = true,
 }
 
-local LootSpecializedItemTypes = {
+local lootSpecializedItemTypes = {
     [SPECIALIZED_ITEMTYPE_TROPHY_RECIPE_FRAGMENT] = true,
 }
 
-local TraitTypeIntricate = {
+local traitTypeIntricate = {
     [ITEM_TRAIT_TYPE_ARMOR_INTRICATE] = true,
     [ITEM_TRAIT_TYPE_JEWELRY_INTRICATE] = true,
     [ITEM_TRAIT_TYPE_WEAPON_INTRICATE] = true,
 }
 
-local LootIds = {
+local lootIds = {
     [33265] = true, -- Soul Gem (Empty)
     [33271] = true, -- Soul Gem
     [44879] = true, -- Grand Repair Kit
@@ -69,14 +69,14 @@ local targetType, unownedCurrency, lootId, isQuest, itemLink, isSet, traitType, 
 local function OnLootUpdated()
     _, targetType = GetLootTargetInfo()
 
-    if TargetTypes[targetType] then
-        for key, value in ipairs(UncappedCurrencies) do
+    if targetTypes[targetType] then
+        for key, value in ipairs(uncappedCurrencies) do
             unownedCurrency = GetLootCurrency(value)
 
             if unownedCurrency > 0 then LootCurrency(value) end
         end
 
-        for key, value in ipairs(CappedCurrencies) do
+        for key, value in ipairs(cappedCurrencies) do
             unownedCurrency = GetLootCurrency(value)
 
             -- Don't overflow
@@ -92,7 +92,7 @@ local function OnLootUpdated()
             itemType, specializedItemType = GetItemLinkItemType(itemLink)
             -- isCollected = IsItemSetCollectionPieceUnlocked(itemId)
 
-            if isSet or isQuest or LootItemTypes[itemType] or LootSpecializedItemTypes[specializedItemType] or TraitTypeIntricate[traitType] or LootIds[itemId] then LootItemById(lootId)end
+            if isSet or isQuest or lootItemTypes[itemType] or lootSpecializedItemTypes[specializedItemType] or traitTypeIntricate[traitType] or lootIds[itemId] then LootItemById(lootId)end
         end
     end
 end
