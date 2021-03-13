@@ -28,14 +28,18 @@ local cappedCurrencies = {
     CURT_EVENT_TICKETS,
 }
 
-local lootItemTypes = {
+local itemTypes = {
     [ITEMTYPE_CONTAINER] = true,
     [ITEMTYPE_RACIAL_STYLE_MOTIF] = true,
     [ITEMTYPE_RECIPE] = true,
     [ITEMTYPE_TREASURE] = true,
 }
 
-local lootSpecializedItemTypes = {
+local lootTypes = {
+    [LOOT_TYPE_ANTIQUITY_LEAD] = true,
+}
+
+local specializedItemTypes = {
     [SPECIALIZED_ITEMTYPE_TROPHY_RECIPE_FRAGMENT] = true,
 }
 
@@ -64,7 +68,7 @@ local lootIds = {
 local BL = BearLoot
 local EM = GetEventManager()
 
-local targetType, unownedCurrency, lootId, isQuest, itemLink, isSet, traitType, itemId, itemType, specializedItemType, isCollected
+local targetType, unownedCurrency, lootId, isQuest, lootType, itemLink, isSet, traitType, itemId, itemType, specializedItemType, isCollected
 
 local function OnLootUpdated()
     _, targetType = GetLootTargetInfo()
@@ -84,7 +88,7 @@ local function OnLootUpdated()
         end
 
         for i = 1, GetNumLootItems() do
-            lootId, _, _, _, _, _, isQuest = GetLootItemInfo(i)
+            lootId, _, _, _, _, _, isQuest, _, lootType = GetLootItemInfo(i)
             itemLink = GetLootItemLink(lootId, LINK_STYLE_DEFAULT)
             isSet = GetItemLinkSetInfo(itemLink, false)
             traitType = GetItemLinkTraitInfo(itemLink)
@@ -92,7 +96,7 @@ local function OnLootUpdated()
             itemType, specializedItemType = GetItemLinkItemType(itemLink)
             -- isCollected = IsItemSetCollectionPieceUnlocked(itemId)
 
-            if isSet or isQuest or lootItemTypes[itemType] or lootSpecializedItemTypes[specializedItemType] or traitTypeIntricate[traitType] or lootIds[itemId] then LootItemById(lootId)end
+            if isSet or isQuest or itemTypes[itemType] or lootTypes[lootType] or specializedItemTypes[specializedItemType] or traitTypeIntricate[traitType] or lootIds[itemId] then LootItemById(lootId)end
         end
     end
 end
