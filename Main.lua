@@ -48,6 +48,7 @@ local itemTypes = {
     [ITEMTYPE_JEWELRYCRAFTING_RAW_MATERIAL] = true,
     [ITEMTYPE_JEWELRY_RAW_TRAIT] = true,
     [ITEMTYPE_JEWELRY_TRAIT] = true,
+    [ITEMTYPE_LURE] = true,
     [ITEMTYPE_RACIAL_STYLE_MOTIF] = true,
     [ITEMTYPE_REAGENT] = true,
     [ITEMTYPE_RECIPE] = true,
