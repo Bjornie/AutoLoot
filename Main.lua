@@ -1,6 +1,6 @@
 BearLoot = {
     name = "BearLoot",
-    version = "1.0.0",
+    version = "1.0.1",
     svName = "BearLootSV",
     svVersion = 1,
 }
@@ -28,6 +28,7 @@ local cappedCurrencies = {
     CURT_EVENT_TICKETS,
 }
 
+-- List of items I personally am interested in looting
 local itemTypes = {
     [ITEMTYPE_ARMOR_TRAIT] = true,
     [ITEMTYPE_BLACKSMITHING_BOOSTER] = true,
@@ -96,32 +97,33 @@ local lootIds = {
 local BL = BearLoot
 local EM = GetEventManager()
 
-local targetType, unownedCurrency, lootId, isQuest, lootType, itemLink, isSet, traitType, itemId, itemType, specializedItemType, isCollected
-
 local function OnLootUpdated()
-    _, targetType = GetLootTargetInfo()
+    local _, targetType = GetLootTargetInfo()
 
     if targetTypes[targetType] then
+        -- Loot currencies that have no limit
         for key, value in ipairs(uncappedCurrencies) do
-            unownedCurrency = GetLootCurrency(value)
+            local unownedCurrency = GetLootCurrency(value)
 
             if unownedCurrency > 0 then LootCurrency(value) end
         end
 
+        -- Loot currencies that have a limit only if we don't "lose" any
         for key, value in ipairs(cappedCurrencies) do
-            unownedCurrency = GetLootCurrency(value)
+            local unownedCurrency = GetLootCurrency(value)
 
             -- Don't overflow
             if unownedCurrency > 0 and (GetMaxPossibleCurrency(value, CURRENCY_LOCATION_ACCOUNT) >= GetCurrencyAmount(value, CURRENCY_LOCATION_ACCOUNT) + unownedCurrency) then LootCurrency(value) end
         end
 
+        -- Loot items I persoanlly am interested in
         for i = 1, GetNumLootItems() do
-            lootId, _, _, _, _, _, isQuest, _, lootType = GetLootItemInfo(i)
-            itemLink = GetLootItemLink(lootId, LINK_STYLE_DEFAULT)
-            isSet = GetItemLinkSetInfo(itemLink, false)
-            traitType = GetItemLinkTraitInfo(itemLink)
-            itemId = GetItemLinkItemId(itemLink)
-            itemType, specializedItemType = GetItemLinkItemType(itemLink)
+            local lootId, _, _, _, _, _, isQuest, _, lootType = GetLootItemInfo(i)
+            local itemLink = GetLootItemLink(lootId, LINK_STYLE_DEFAULT)
+            local isSet = GetItemLinkSetInfo(itemLink, false)
+            local traitType = GetItemLinkTraitInfo(itemLink)
+            local itemId = GetItemLinkItemId(itemLink)
+            local itemType, specializedItemType = GetItemLinkItemType(itemLink)
             -- isCollected = IsItemSetCollectionPieceUnlocked(itemId)
 
             if isSet or isQuest or itemTypes[itemType] or lootTypes[lootType] or specializedItemTypes[specializedItemType] or traitTypeIntricate[traitType] or lootIds[itemId] then LootItemById(lootId)end
@@ -129,9 +131,11 @@ local function OnLootUpdated()
     end
 end
 
-EM:RegisterForEvent(BL.name, EVENT_ADD_ON_LOADED, function(eventCode, addonName)
+local function OnAddonLoaded(eventCode, addonName)
     if addonName == BL.name then
         EM:UnregisterForEvent(BL.name, EVENT_ADD_ON_LOADED)
         EM:RegisterForEvent(BL.name, EVENT_LOOT_UPDATED, OnLootUpdated)
     end
-end)
+end
+
+EM:RegisterForEvent(BL.name, EVENT_ADD_ON_LOADED, OnAddonLoaded)
