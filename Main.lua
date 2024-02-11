@@ -1,7 +1,7 @@
-BearLoot = {
-    name = "BearLoot",
+AutoLoot = {
+    name = "AutoLoot",
     version = "1.0.1",
-    svName = "BearLootSV",
+    svName = "AutoLootSV",
     svVersion = 1,
 }
 
@@ -94,7 +94,7 @@ local lootIds = {
     [134623] = true, -- Uncracked Transmutation Geode, Epic
 }
 
-local BL = BearLoot
+local AL = AutoLoot
 local EM = GetEventManager()
 
 local function OnLootUpdated()
@@ -132,10 +132,10 @@ local function OnLootUpdated()
 end
 
 local function OnAddonLoaded(eventCode, addonName)
-    if addonName == BL.name then
-        EM:UnregisterForEvent(BL.name, EVENT_ADD_ON_LOADED)
-        EM:RegisterForEvent(BL.name, EVENT_LOOT_UPDATED, OnLootUpdated)
+    if addonName == AL.name then
+        EM:UnregisterForEvent(AL.name, EVENT_ADD_ON_LOADED)
+        EM:RegisterForEvent(AL.name, EVENT_LOOT_UPDATED, OnLootUpdated)
     end
 end
 
-EM:RegisterForEvent(BL.name, EVENT_ADD_ON_LOADED, OnAddonLoaded)
+EM:RegisterForEvent(AL.name, EVENT_ADD_ON_LOADED, OnAddonLoaded)

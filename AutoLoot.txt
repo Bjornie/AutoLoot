@@ -1,7 +1,7 @@
-## Title: Bear Loot
+## Title: Auto Loot
 ## Version: 1.0.1
 ## APIVersion: 100033
 ## Author: |c00BFFFBjørn|r
-## SavedVariables: BearLootSV
+## SavedVariables: AutoLootSV
 
 Main.lua
